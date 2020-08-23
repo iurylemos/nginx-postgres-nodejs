@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  web:
+    image: nginx
+    volumes:
+      - ./nginx/app.conf:/etc/nginx/nginx.conf
+    container_name: nginx_front
+    depends_on:
+      - minha_app
+    ports:
+      - 80:80
+  db:
+    image: postgres
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    ports:
+      - 5432
+  minha_app:
+    image: iurylemos/minha-app-dockerizada:latest
+    build: .
+    depends_on:
+      - db
+volumes:
+  postgres_db:
+    external: true
